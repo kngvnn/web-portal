@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Web Portal</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#edf3ef;color:#183c2c;font-family:Arial,sans-serif}
+header{background:#183c2c;color:white;padding:22px;font-size:25px;font-weight:bold}
+form{display:flex;gap:8px;padding:16px}
+input{flex:1;min-width:0;padding:13px;border:1px solid #bbb;border-radius:9px;font-size:16px}
+button{padding:12px 18px;background:#287849;color:white;border:0;border-radius:9px;cursor:pointer}
+nav{display:flex;gap:9px;flex-wrap:wrap;padding:0 16px 16px}
+nav button{background:white;color:#183c2c;border:1px solid #d6e0d8}
+main{margin:0 16px;background:white;border-radius:12px;overflow:hidden;min-height:300px}
+#message{padding:28px;text-align:center}
+#viewer{display:none;width:100%;height:70vh;border:0}
+</style>
+</head>
+<body>
+<header>🌿 Web Portal</header>
+<form id="search">
+<input id="address" placeholder="Enter a website or search..." aria-label="Website address">
+<button type="submit">Go</button>
+</form>
+<nav>
+<button data-url="https://www.google.com">Google</button>
+<button data-url="https://www.wikipedia.org">Wikipedia</button>
+<button data-url="https://www.youtube.com">YouTube</button>
+</nav>
+<main>
+<div id="message">
+<h2>Welcome to Web Portal</h2>
+<p>Enter a website address above to try opening it here.</p>
+<p id="note">Some websites block embedded viewing.</p>
+</div>
+<iframe id="viewer" title="Website viewer" referrerpolicy="no-referrer"></iframe>
+</main>
+<script>
+const input=document.getElementById('address');
+const viewer=document.getElementById('viewer');
+const message=document.getElementById('message');
+
+function openSite(value){
+  value=value.trim();
+  if(!value)return;
+  let url;
+  if(/^https?:\/\//i.test(value)){
+    url=value;
+  }else if(/^[^\s.]+\.[^\s]+$/.test(value)){
+    url='https://'+value;
+  }else{
+    url='https://www.google.com/search?q='+encodeURIComponent(value);
+  }
+  message.style.display='none';
+  viewer.style.display='block';
+  viewer.src=url;
+}
+document.getElementById('search').addEventListener('submit',function(e){
+  e.preventDefault();
+  openSite(input.value);
+});
+document.querySelectorAll('[data-url]').forEach(function(button){
+  button.addEventListener('click',function(){
+    input.value=button.dataset.url;
+    openSite(button.dataset.url);
+  });
+});
+</script>
+</body>
+</html>
